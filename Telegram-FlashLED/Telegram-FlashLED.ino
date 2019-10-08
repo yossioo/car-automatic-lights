@@ -98,7 +98,7 @@ void setup() {
   pinMode(ledPin, OUTPUT); // initialize digital ledPin as an output.
   delay(10);
   digitalWrite(ledPin, HIGH); // initialize pin as off
-
+//  bot._debug = true;
   Serial.println("Executing getMe");
   bot.getMe();
   Serial.print("Name: -");
@@ -107,10 +107,10 @@ void setup() {
   Serial.print(bot.userName);
   Serial.println("-");
 
-  String up = "Civic BOT is up. Connected to network: ";
-  String up_message = String(up + ssid 
-  + "\nLocal IP: " + WiFi.localIP().toString());
-  bot.sendMessage("49722910", up, "Markdown");
+
+  String up_message = String(bot.name + " is up.\nConnected to WiFi: __" + ssid
+                             + "__\nLocal IP: " + WiFi.localIP().toString());
+  bot.sendMessage("49722910", up_message, "Markdown");
 }
 
 void loop() {
