@@ -8,13 +8,13 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
-
+#include "arduino_secrets.h"
 // Initialize Wifi connection to the router
-char ssid[] = "yoss";     // your network SSID (name)
-char password[] = "aaabbbcd"; // your network key
+char ssid[] = SECRET_SSID;     // your network SSID (name)
+char password[] = SECRET_PASS; // your network key
 
 // Initialize Telegram BOT
-#define BOTtoken "807194440:AAHLsxgnco2lSm-s-n3_CHGjfzgXx6ynweI"  // your Bot Token (Get from Botfather)
+#define BOTtoken SECRET_BOT_TOKEN  // your Bot Token (Get from Botfather)
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
