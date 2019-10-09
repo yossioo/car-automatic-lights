@@ -77,7 +77,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   pinMode(ledPin, OUTPUT); // initialize digital ledPin as an output.
-  delay(10);
+  delay(1);
   digitalWrite(ledPin, HIGH); // initialize pin as off
   //  bot._debug = true;
   Serial.println("Executing getMe");
@@ -89,7 +89,7 @@ void setup() {
   Serial.println("]");
 
 
-  String up_message = String(bot.name + " is up.\nConnected to WiFi: __" + ssid
+  String up_message = String(String("Connected to WiFi: __") + ssid
                              + "__\nLocal IP: " + WiFi.localIP().toString());
   Serial.println(String("Sending message to owner: ") + OWNER);
   Serial.println(up_message);
