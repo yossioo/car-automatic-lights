@@ -32,7 +32,7 @@ struct State {
 };
 
 struct Settings {
-  int motor_running_voltage_threshold = 0; // VOLT * 10
+  double motor_running_voltage_threshold = 0;
   int delay_lights_millis =
       3000; // Delay to turn lights on after the motor is running
   int sensor_threshold_to_turn_on = 0;
@@ -58,7 +58,12 @@ private slots:
     void readPendingDatagrams();
 
 
+    void on_spbMotorVthr_valueChanged(double arg1);
+
+    void on_spbMotorVthr_editingFinished();
+
 private:
+    bool isChangingSettings;
     Ui::MainWindow *ui;
     QUdpSocket* socket;
     QJsonObject json_object_received_state;

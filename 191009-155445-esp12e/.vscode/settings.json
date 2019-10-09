@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.linux": {
+        "PATH": "/home/yossi/.platformio/penv/bin:/home/yossi/.platformio/penv:/home/yossi/ardupilot/Tools/autotest:/opt/gcc-arm-none-eabi-4_9-2015q3/bin:/home/yossi/.local/bin:/opt/ros/melodic/bin:/home/yossi/ardupilot/Tools/autotest:/opt/gcc-arm-none-eabi-4_9-2015q3/bin:/home/yossi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/yossi/.dotnet/tools:/home/yossi/.dotnet/tools",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
