@@ -179,6 +179,8 @@ void CAL::connect_to_wifi() {
       this->state.ip_bcast[3] = 255;
       Serial.print("AP IP address: ");
       Serial.println(this->state.ip_self);
+      Serial.print("Subnet mask: ");
+      Serial.println(WiFi.subnetMask());
       Serial.print("Broadcast address: ");
       Serial.println(this->state.ip_bcast);
       udp.begin(this->settings.localUdpPort);
@@ -192,10 +194,17 @@ void CAL::connect_to_wifi() {
   Serial.print("IP address: ");
   this->state.ip_self = WiFi.localIP();
   Serial.println(this->state.ip_self);
+  Serial.print("Subnet mask: ");
+  IPAddress sbnet = WiFi.subnetMask();
+  Serial.println(sbnet);
 
   this->state.ip_bcast = this->state.ip_self;
   Serial.print("Broadcast address: ");
-  this->state.ip_bcast[3] = 255;
+  this->state.ip_bcast[0] = state.ip_self[0] | (0xFF - sbnet[0]);
+  this->state.ip_bcast[1] = state.ip_self[1] | (0xFF - sbnet[1]);
+  this->state.ip_bcast[2] = state.ip_self[2] | (0xFF - sbnet[2]);
+  this->state.ip_bcast[3] = state.ip_self[3] | (0xFF - sbnet[3]);
+  // this->state.ip_bcast[3] = 255;
   Serial.println(this->state.ip_bcast);
   udp.begin(this->settings.localUdpPort);
 }
