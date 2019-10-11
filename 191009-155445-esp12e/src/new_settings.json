@@ -1,0 +1,16 @@
+{
+    "motor_running_voltage_threshold": 13.5,
+    "delay_lights_millis": 3000,
+    "sensor_threshold_to_turn_on": 300,
+    "sensor_threshold_to_turn_off": 700,
+    "winter_mode": false,
+    "acc_voltage_scaling_factor": 1.0,
+    "loop_delay": 100
+}
+
+{
+    "wifi_connect_timeout": 15000,
+    "use_bufferd_udp": false,
+    "ssid": "aaa",
+    "password": "bbb"
+}
