@@ -58,7 +58,11 @@ void CAL::print_JSON_state_over_serial() {
 
 void CAL::read_voltage() {
   int pressed = !digitalRead(4);
-  this->state.voltage = pressed ? 145 : 127;
+  this->state.voltage = pressed ? 14.5 : 12.7;
+  /* Add something like
+  int val = analogRead(A1);
+  this->state.voltage = val * settings.acc_voltage_scaling_factor;
+  */
 }
 
 void CAL::read_sensor() {
@@ -241,7 +245,7 @@ void CAL::send_JSON_state_udp() {
   status["ip_self"] = this->state.ip_self.toString();
 
   status["motor_running_voltage_threshold"] =
-      0.1 * this->settings.motor_running_voltage_threshold;
+      this->settings.motor_running_voltage_threshold;
   status["delay_lights_millis"] = this->settings.delay_lights_millis;
   status["sensor_threshold_to_turn_on"] =
       this->settings.sensor_threshold_to_turn_on;

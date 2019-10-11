@@ -44,9 +44,10 @@ void MainWindow::readPendingDatagrams()
     this->setAppEnable(true);
     main_timer->start(100);
 
+
     QByteArray datagram;
     while (socket->hasPendingDatagrams()) {
-        datagram.resize(socket->pendingDatagramSize());
+        datagram.resize(int(socket->pendingDatagramSize()));
         socket->readDatagram(datagram.data(), datagram.size());
     }
     std::string in = datagram.toStdString();
@@ -67,7 +68,7 @@ void MainWindow::readPendingDatagrams()
 void MainWindow::parseJson()
 {
     this->updated_state.sensor = json_object_received_state["sensor"].toInt();
-    this->updated_state.voltage = json_object_received_state["voltage"].toInt();
+    this->updated_state.voltage = json_object_received_state["voltage"].toDouble();
     this->updated_state.motor_running = json_object_received_state["motor_running"].toBool();
 
     if (json_object_received_state.contains("ssid") && json_object_received_state["ssid"].isString())
@@ -92,7 +93,7 @@ void MainWindow::update_UI_from_json_status()
         ui->leMOTOR->setStyleSheet(styleSheetWARN);
         ui->leMOTOR->setText("STOPPED");
     }
-    ui->lcdVoltage->display(0.1*this->updated_state.voltage);
+    ui->lcdVoltage->display(this->updated_state.voltage);
     ui->pbSensor->setValue(100 *this->updated_state.sensor / 1024);
     ui->pbSensor_2->setValue(100 *this->updated_state.sensor / 1024);
 
