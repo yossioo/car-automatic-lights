@@ -27,8 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     setAppEnable(false);
 
-//    connect(ui->spbMotorVthr, &QDoubleSpinBox::valueChanged,
-//            this, &MainWindow::start_editing_settings);
+    //    connect(ui->spbMotorVthr, &QDoubleSpinBox::valueChanged,
+    //            this, &MainWindow::start_editing_settings);
 }
 
 MainWindow::~MainWindow()
@@ -107,8 +107,8 @@ void MainWindow::update_UI_from_json_status()
 void MainWindow::timerCallback()
 {
     QDateTime now = QDateTime::currentDateTime();
-//    qDebug() << "NOW:\t" << now << "\t\t" << now.toMSecsSinceEpoch();
-//    qDebug() << "PREV:\t" << last_udp_status << "\t\t" << last_udp_status.toMSecsSinceEpoch();
+    //    qDebug() << "NOW:\t" << now << "\t\t" << now.toMSecsSinceEpoch();
+    //    qDebug() << "PREV:\t" << last_udp_status << "\t\t" << last_udp_status.toMSecsSinceEpoch();
 
     if (last_udp_status.msecsTo(now) > this->millis_timer_timeout) {
         main_timer->stop();
