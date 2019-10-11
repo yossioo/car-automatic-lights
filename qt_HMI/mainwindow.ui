@@ -34,6 +34,37 @@
      </widget>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="lbConnection">
+        <property name="text">
+         <string>Connection</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="leSTATE">
+        <property name="text">
+         <string>DISCONNECTED</string>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>E&amp;XIT</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -47,7 +78,7 @@
      </spacer>
     </item>
     <item>
-     <widget class="QCheckBox" name="checkBox_2">
+     <widget class="QCheckBox" name="cbGLOBALENABLE">
       <property name="text">
        <string>ENABLE THE CAL SYSTEM</string>
       </property>
@@ -63,26 +94,6 @@
         <string>Status</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout_3">
-        <item row="0" column="0">
-         <widget class="QLabel" name="lableSTATUS">
-          <property name="text">
-           <string>State</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="leSTATUS">
-          <property name="text">
-           <string>DISCONNECTED</string>
-          </property>
-          <property name="echoMode">
-           <enum>QLineEdit::Normal</enum>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_5">
           <property name="text">
@@ -201,6 +212,12 @@
         </item>
         <item row="1" column="1">
          <widget class="QSlider" name="slTHR2ON">
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>20</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -215,8 +232,29 @@
         </item>
         <item row="2" column="1">
          <widget class="QSlider" name="slTHR2OFF">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>20</number>
+          </property>
+          <property name="tracking">
+           <bool>true</bool>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="invertedAppearance">
+           <bool>true</bool>
+          </property>
+          <property name="invertedControls">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -228,7 +266,7 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="QCheckBox" name="cbWinterMode">
           <property name="text">
            <string/>
           </property>
@@ -304,5 +342,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>315</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>338</x>
+     <y>197</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

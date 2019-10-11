@@ -6,6 +6,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
+#include <QInputDialog>
+#include <QTimer>
 
 
 QT_BEGIN_NAMESPACE
@@ -56,11 +58,14 @@ public:
 
 private slots:
     void readPendingDatagrams();
-
-
     void on_spbMotorVthr_valueChanged(double arg1);
-
     void on_spbMotorVthr_editingFinished();
+    void timerCallback();
+    void on_slTHR2ON_sliderPressed();
+
+    void on_slTHR2ON_valueChanged(int value);
+
+    void on_slTHR2OFF_valueChanged(int value);
 
 private:
     bool isChangingSettings;
@@ -69,10 +74,20 @@ private:
     QJsonObject json_object_received_state;
     QJsonObject json_object_command;
     QDateTime last_udp_status;
+    QTimer *main_timer;
     State updated_state;
     Settings received_settings;
 
+    /// App settings:
+    int millis_timer_timeout = 1000;
+    QString styleSheetOK = "QLineEdit { background: rgb(0, 255, 0); selection-background-color: rgb(0, 255, 50); }";
+    QString styleSheetWARN = "QLineEdit { background: rgb(255, 128, 0); selection-background-color: rgb(255, 25, 0); }";
+    QString styleSheetERROR = "QLineEdit { background: rgb(255, 0, 0); selection-background-color: rgb(255, 128, 0); }";
+
+
     void parseJson();
     void update_UI_from_json_status();
+    void setAppEnable(bool enabled);
+
 };
 #endif // MAINWINDOW_H
