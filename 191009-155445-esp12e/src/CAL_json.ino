@@ -13,17 +13,17 @@ void setup() {
   Serial.println();
   cal = new CAL();
   cal->setup_things();
-  analogWrite(cal->settings.red, 128);
-  analogWrite(cal->settings.green, 75);
-  analogWrite(cal->settings.blue, 0);
+  analogWrite(cal->params.red, 128);
+  analogWrite(cal->params.green, 75);
+  analogWrite(cal->params.blue, 0);
   cal->connect_to_wifi();
-  analogWrite(cal->settings.red, 0);
-  analogWrite(cal->settings.green, 255);
-  analogWrite(cal->settings.blue, 0);
+  analogWrite(cal->params.red, 0);
+  analogWrite(cal->params.green, 255);
+  analogWrite(cal->params.blue, 0);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(100);
+  delay(cal->settings.loop_delay);
   cal->spin_once();
 }

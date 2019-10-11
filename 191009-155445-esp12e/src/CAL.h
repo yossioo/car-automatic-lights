@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
+#include <ESP_EEPROM.h>
 #include <StreamUtils.h>
 #include <WiFiClientSecure.h>
 #include <WiFiUdp.h>
@@ -32,24 +33,29 @@ struct State {
 };
 
 struct Settings {
-  int motor_running_voltage_threshold = 135; // VOLT * 10
   int delay_lights_millis =
       3000; // Delay to turn lights on after the motor is running
   int sensor_threshold_to_turn_on = 300;
   int sensor_threshold_to_turn_off = 700;
+  bool winter_mode = false;
   float acc_voltage_scaling_factor = 1;
+  float motor_running_voltage_threshold = 13.5; // V
+  int loop_delay = 100;
+};
+
+struct WiFi_Settings {
   int wifi_connect_timeout =
       15000; // Timeout connectiong to WiFi and create self AP
-  int sensorPin = A0;
-  bool winter_mode = false;
   bool use_bufferd_udp = false;
+  char ssid[50] = SECRET_SSID;     // your network SSID (name)
+  char password[50] = SECRET_PASS; // your network key
+};
+
+struct Parameters {
   int red = 15;
   int green = 12;
   int blue = 13;
-
-  char ssid[50] = SECRET_SSID;     // your network SSID (name)
-  char password[50] = SECRET_PASS; // your network key
-
+  int sensorPin = A0;
   int localUdpPort = 55554;
   int remoteUdpPort = 55555;
 };
@@ -63,20 +69,21 @@ public:
   void connect_to_wifi();
   State state;
   Settings settings;
+  WiFi_Settings w_settings;
+  Parameters params;
 
 private:
   WiFiClientSecure client;
   WiFiUDP udp;
 
+  void LoadSettings();
+  void SaveSettings();
   void read_voltage();
   void read_sensor();
   void update_motor_state();
   void update_lights_state();
   void set_lights_mode(LightsMode lmode);
   void turnLights(bool on);
-  void print_over_serial();
-  void print_over_serial(const char *s);
-  void print_over_serial(int i);
   void print_state_over_serial();
   void print_JSON_state_over_serial();
   void send_JSON_state_udp();

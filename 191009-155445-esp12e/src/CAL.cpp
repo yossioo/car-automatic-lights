@@ -1,11 +1,42 @@
 #include "CAL.h"
 #include <Arduino.h>
 
-void CAL::print_over_serial() { Serial.println("Hello from CAL"); }
-void CAL::print_over_serial(const char *s) { Serial.println(s); }
-void CAL::print_over_serial(int i) {
-  Serial.print("CAL: ");
-  Serial.println(i);
+void print_settings(Settings data) {
+  Serial.printf("motor_running_voltage_threshold: %3.3f\n",
+                data.motor_running_voltage_threshold);
+  Serial.printf("delay_lights_millis: %d\n", data.delay_lights_millis);
+  Serial.printf("sensor_threshold_to_turn_on: %d\n",
+                data.sensor_threshold_to_turn_on);
+  Serial.printf("sensor_threshold_to_turn_off: %d\n",
+                data.sensor_threshold_to_turn_off);
+  Serial.printf("acc_voltage_scaling_factor: %3.3f\n",
+                data.acc_voltage_scaling_factor);
+  Serial.printf("winter_mode: %d\n", data.winter_mode);
+}
+
+void print_WiFi_Settings(WiFi_Settings data) {
+  Serial.printf("wifi_connect_timeout: %d\n", data.wifi_connect_timeout);
+  Serial.printf("use_bufferd_udp: %d\n", data.use_bufferd_udp);
+  Serial.printf("ssid: %s\n", data.ssid);
+  Serial.printf("password: %s\n", data.password);
+}
+
+void CAL::LoadSettings() {
+  int settings_size = sizeof(Settings);
+
+  EEPROM.begin(settings_size);
+  Settings data;
+  EEPROM.get(0, data);
+
+  Serial.print("EEPROM Settings: ");
+  Serial.print(settings_size);
+  Serial.println(" bytes");
+  print_settings(data);
+}
+
+void CAL::SaveSettings() {
+  EEPROM.put(0, settings);
+  EEPROM.commit();
 }
 
 void CAL::print_state_over_serial() {
@@ -66,7 +97,7 @@ void CAL::read_voltage() {
 }
 
 void CAL::read_sensor() {
-  this->state.sensor = analogRead(this->settings.sensorPin);
+  this->state.sensor = analogRead(this->params.sensorPin);
 }
 
 void CAL::update_motor_state() {
@@ -134,21 +165,23 @@ void CAL::update_lights_state() {
 
 void CAL::turnLights(bool on) {
   if (on) {
-    analogWrite(this->settings.red, 255);
-    analogWrite(this->settings.green, 255);
-    analogWrite(this->settings.blue, 255);
+    analogWrite(this->params.red, 255);
+    analogWrite(this->params.green, 255);
+    analogWrite(this->params.blue, 255);
   } else {
-    analogWrite(this->settings.red, 100);
-    analogWrite(this->settings.green, 75);
-    analogWrite(this->settings.blue, 0);
+    analogWrite(this->params.red, 100);
+    analogWrite(this->params.green, 75);
+    analogWrite(this->params.blue, 0);
   }
 }
 
 void CAL::setup_things() {
   pinMode(4, INPUT);
-  pinMode(this->settings.red, OUTPUT);
-  pinMode(this->settings.green, OUTPUT);
-  pinMode(this->settings.blue, OUTPUT);
+  pinMode(this->params.red, OUTPUT);
+  pinMode(this->params.green, OUTPUT);
+  pinMode(this->params.blue, OUTPUT);
+
+  LoadSettings();
 }
 
 void CAL::connect_to_wifi() {
@@ -161,16 +194,16 @@ void CAL::connect_to_wifi() {
 
   // attempt to connect to Wifi network:
   Serial.print("\n\nConnecting Wifi: ");
-  Serial.println(this->settings.ssid);
-  WiFi.begin(this->settings.ssid, this->settings.password);
+  Serial.println(this->w_settings.ssid);
+  WiFi.begin(this->w_settings.ssid, this->w_settings.password);
 
   unsigned long int wifi_start_millis = millis();
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
-    if (millis() > wifi_start_millis + this->settings.wifi_connect_timeout) {
+    if (millis() > wifi_start_millis + this->w_settings.wifi_connect_timeout) {
       Serial.print("\nFAILED TO CONNECTO TO ");
-      Serial.println(this->settings.ssid);
+      Serial.println(this->w_settings.ssid);
       Serial.println("Creating AP");
       WiFi.mode(WIFI_AP);
       WiFi.disconnect();
@@ -187,12 +220,12 @@ void CAL::connect_to_wifi() {
       Serial.println(WiFi.subnetMask());
       Serial.print("Broadcast address: ");
       Serial.println(this->state.ip_bcast);
-      udp.begin(this->settings.localUdpPort);
+      udp.begin(this->params.localUdpPort);
 
       return;
     }
   }
-  this->state.ssid_string = this->settings.ssid;
+  this->state.ssid_string = this->w_settings.ssid;
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.print("IP address: ");
@@ -210,7 +243,7 @@ void CAL::connect_to_wifi() {
   this->state.ip_bcast[3] = state.ip_self[3] | (0xFF - sbnet[3]);
   // this->state.ip_bcast[3] = 255;
   Serial.println(this->state.ip_bcast);
-  udp.begin(this->settings.localUdpPort);
+  udp.begin(this->params.localUdpPort);
 }
 
 void CAL::send_JSON_state_udp() {
@@ -253,13 +286,13 @@ void CAL::send_JSON_state_udp() {
       this->settings.sensor_threshold_to_turn_off;
   status["sensor_threshold_to_turn_off"] =
       this->settings.sensor_threshold_to_turn_off;
-  status["wifi_connect_timeout"] = this->settings.wifi_connect_timeout;
-  status["localUdpPort"] = this->settings.localUdpPort;
-  status["remoteUdpPort"] = this->settings.remoteUdpPort;
+  status["wifi_connect_timeout"] = this->w_settings.wifi_connect_timeout;
+  status["localUdpPort"] = this->params.localUdpPort;
+  status["remoteUdpPort"] = this->params.remoteUdpPort;
   status["winter_mode"] = this->settings.winter_mode;
-  udp.beginPacket(this->state.ip_bcast, this->settings.remoteUdpPort);
+  udp.beginPacket(this->state.ip_bcast, this->params.remoteUdpPort);
 
-  if (this->settings.use_bufferd_udp) {
+  if (this->w_settings.use_bufferd_udp) {
     WriteBufferingStream bufferedWifiClient(udp, 64);
     serializeJson(status, bufferedWifiClient);
     bufferedWifiClient.flush();
@@ -269,6 +302,7 @@ void CAL::send_JSON_state_udp() {
   }
   udp.endPacket();
 }
+
 /// The method is called in loop() function
 void CAL::spin_once() {
   read_voltage();
