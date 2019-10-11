@@ -19,8 +19,8 @@ typedef enum {
 } LightsMode;
 
 struct State {
-  int voltage; // VOLT * 10
-  int sensor;  // Analog data - 0:1023 (1-1024?)
+  float voltage; // V
+  int sensor;    // Analog data - 0:1023 (1-1024?)
   bool motor_running;
   // char *ssid; // Wireless network ID
   String ssid_string;
