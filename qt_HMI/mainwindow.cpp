@@ -134,6 +134,7 @@ void MainWindow::setAppEnable(bool enabled)
     ui->spbMotorVthr->setEnabled(enabled);
     ui->cbWinterMode->setEnabled(enabled);
 
+    ui->spbDelayms->setEnabled(enabled);
 }
 
 
