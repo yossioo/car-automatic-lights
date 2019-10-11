@@ -87,7 +87,8 @@ private:
   void print_state_over_serial();
   void print_JSON_state_over_serial();
   void send_JSON_state_udp();
-
+  void send_custom_message_udp(String msg);
+  void receiveUdpPacket();
   void spin();
 };
 

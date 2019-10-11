@@ -313,6 +313,46 @@ void CAL::spin_once() {
   // print_JSON_state_over_serial();
 
   send_JSON_state_udp();
+  receiveUdpPacket();
 }
+
+void CAL::receiveUdpPacket() {
+  /// Receive UDP:
+  char incomingPacket[1024];
+  int packetSize = udp.parsePacket();
+
+  if (packetSize) {
+    Serial.printf("Received %d bytes from %s, port %d\n", packetSize,
+                  udp.remoteIP().toString().c_str(), udp.remotePort());
+    int len = udp.read(incomingPacket, packetSize);
+    if (len > 0) {
+      incomingPacket[len] = '\0';
+    }
+    Serial.printf("UDP packet contents: %s\n", incomingPacket);
+
+    // StaticJsonDocument<1000> new_settings;
+    DynamicJsonDocument in_json(packetSize);
+
+    // Deserialize the JSON document
+    DeserializationError error = deserializeJson(in_json, incomingPacket);
+
+    // Test if parsing succeeds.
+    if (error) {
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.c_str());
+      return;
+    }
+    if (in_json.containsKey("ssid")) {
+      Serial.println("Received new WiFi settings.");
+    } else if (in_json.containsKey("winter_mode")) {
+      Serial.println("Received new settings.");
+    } else {
+      Serial.println("Received UNKNOWN message type.");
+    }
+    // serializeJsonPretty(new_settings, Serial);
+  }
+}
+
+void CAL::send_custom_message_udp(String msg) {}
 
 void CAL::spin() {}
